@@ -4,14 +4,21 @@ import sys
 import requests
 import urllib3
 import argparse
+from lxml.html import fromstring
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 protocols={
     'http',
-    'https'
+    # 'https'
 }
 
+def get_title(html):
+    try:
+        tree = fromstring(html.content)
+        return tree.findtext('.//title').rstrip()
+    except Exception as e:
+        return "none"
 
 def check_domain(domain):
     print('[-] Checking Domain: ' + domain)
@@ -19,9 +26,9 @@ def check_domain(domain):
     for prot in protocols:
         test_url=prot+'://' + domain
         try:
-            r = requests.get(url=test_url, allow_redirects=True, verify=False, timeout=5)
+            r = requests.get(url=test_url, allow_redirects=True, verify=False, timeout=10)
             hosts_vivos=open("Live.txt","a")
-            hosts_vivos.write(prot+"\t"+domain+"\t"+str(r.status_code)+"\n")
+            hosts_vivos.write(prot+"\t"+domain+"\t"+str(r.status_code)+"\t"+str(get_title(r))+"\n")
             hosts_vivos.close()
         except requests.exceptions.RequestException as e:
             hosts_muertos=open("Dead.txt","a")
