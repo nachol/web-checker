@@ -28,7 +28,7 @@ def check_domain(domain):
         try:
             r = requests.get(url=test_url, allow_redirects=True, verify=False, timeout=10)
             hosts_vivos=open("Live.txt","a")
-            hosts_vivos.write(prot+"\t"+domain+"\t"+str(r.status_code)+"\t"+str(get_title(r))+"\n")
+            hosts_vivos.write(prot+"\t"+domain+"\t"+str(r.status_code)+"\t"+str(get_title(r).encode('utf-8'))+"\n")
             hosts_vivos.close()
         except requests.exceptions.RequestException as e:
             hosts_muertos=open("Dead.txt","a")
