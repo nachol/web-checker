@@ -19,7 +19,7 @@ The output is separated in 2 files. Live or Dead.
 
 Live file format:
 
-PROTOCOL	DOMAIN	RESPONSE_CODE	WEBSITE_TITLE
+PROTOCOL	DOMAIN	IP  RESPONSE_CODE	WEBSITE_TITLE
 
 Dead File format:
 
