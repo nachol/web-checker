@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 protocols={
     'http',
-    # 'https'
+    'https'
 }
 
 def get_title(html):
@@ -26,13 +26,18 @@ def check_domain(domain):
     for prot in protocols:
         test_url=prot+'://' + domain
         try:
-            r = requests.get(url=test_url, allow_redirects=True, verify=False, timeout=10)
+            r = requests.get(url=test_url, allow_redirects=True, verify=False, timeout=10, stream=True)
+            ip = r.raw._connection.sock.getpeername()[0]
             hosts_vivos=open("Live.txt","a")
-            hosts_vivos.write(prot+"\t"+domain+"\t"+str(r.status_code)+"\t"+str(get_title(r).encode('utf-8'))+"\n")
+            hosts_vivos.write(prot+"\t"+domain+"\t"+ip+"\t"+str(r.status_code)+"\t"+str(get_title(r).encode('utf-8'))+"\n")
             hosts_vivos.close()
         except requests.exceptions.RequestException as e:
             hosts_muertos=open("Dead.txt","a")
             hosts_muertos.write(prot+"\t"+domain+"\t"+str(e)+"\n")
+            hosts_muertos.close()
+        except:
+            hosts_muertos=open("Dead.txt","a")
+            hosts_muertos.write(prot+"\t"+domain+"\tN/A\n")
             hosts_muertos.close()
 
 def main():
